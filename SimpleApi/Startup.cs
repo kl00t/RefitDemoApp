@@ -1,16 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SimpleApi
 {
@@ -28,6 +21,12 @@ namespace SimpleApi
         {
 
             services.AddControllers();
+
+            services.AddCors(policy =>
+            {
+                policy.AddPolicy("OpenCorsPolicy", opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SimpleApi", Version = "v1" });
@@ -45,6 +44,8 @@ namespace SimpleApi
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("OpenCorsPolicy");
 
             app.UseRouting();
 
